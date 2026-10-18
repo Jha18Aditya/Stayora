@@ -39,7 +39,6 @@ share their experiences through reviews and ratings.
 
 - EJS
 - EJS Mate
-- HTML
 - CSS
 - JavaScript
 - Bootstrap
