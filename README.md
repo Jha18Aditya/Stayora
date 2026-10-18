@@ -1,110 +1,61 @@
 # Stayora
 
-Stayora is an Airbnb-style vacation-rental web application built with
-Node.js, Express, MongoDB, and EJS. Users can browse and search listings,
-filter listings by category, view listing details, submit reviews, save
-listings, and manage listings when they are the owner.
+Stayora is an Airbnb-style vacation-rental web application. It allows users
+to discover stays, view detailed property information, save listings, and
+share their experiences through reviews and ratings.
 
 ## Features
 
-- Listing browsing, search, and category filtering
-- Listing creation, editing, and deletion
-- Image uploads through Cloudinary
-- Map locations through Mapbox
-- User registration and login with Passport
-- MongoDB-backed sessions with `connect-mongo`
-- Guest reviews with ratings, comments, authors, and dates
-- Flash messages and validation feedback
-- Responsive EJS views and client-side interactions
-- Health-check endpoint for deployment monitoring
+- Browse vacation-rental listings
+- Search listings by title, location, country, and description
+- Filter listings by category
+- View detailed listing pages with image galleries and maps
+- Create, edit, and delete listings
+- Upload listing images
+- Register and log in as a user
+- Save and unsave favorite listings
+- Submit reviews with ratings and comments
+- Display review authors and review dates
+- Delete reviews created by the logged-in user
+- Show flash messages and validation feedback
+- Responsive user interface for desktop and mobile screens
+- MongoDB-backed user sessions
 
-## Requirements
+## Technologies Used
 
-- Node.js 18 or newer
-- MongoDB Atlas or a local MongoDB server
-- Cloudinary account for image uploads
-- Mapbox access token for listing maps
+### Backend
 
-## Installation
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- Passport.js
+- Passport Local
+- Express Session
+- Connect Mongo
+- Joi
 
-```bash
-npm install
-```
+### Frontend
 
-Create a `.env` file in the project root. Do not commit this file.
+- EJS
+- EJS Mate
+- HTML
+- CSS
+- JavaScript
+- Bootstrap
 
-```env
-ATLASDB_URL=mongodb+srv://username:password@cluster.mongodb.net/airbnb?retryWrites=true&w=majority
-SESSION_SECRET=replace-with-a-long-random-secret
-CLOUD_NAME=your-cloudinary-cloud-name
-CLOUDINARY_API_KEY=your-cloudinary-api-key
-CLOUDINARY_API_SECRET=your-cloudinary-api-secret
-MAPBOX_ACCESS_TOKEN=your-mapbox-access-token
-PORT=8080
-```
+### External Services
 
-If a MongoDB password contains reserved URL characters, encode it before
-placing it in the connection string.
+- MongoDB Atlas for cloud database hosting
+- Cloudinary for image storage and delivery
+- Mapbox for listing location maps
 
-## Running locally
+### Application Structure
 
-Start the application:
-
-```bash
-npm start
-```
-
-The application runs on `http://localhost:8080` by default. Set `PORT` to
-use another port.
-
-The deployment health endpoint is:
-
-```text
-GET /health
-```
-
-It returns:
-
-```json
-{"status":"ok"}
-```
-
-## Database
-
-The application uses the `airbnb` database and stores listings, users,
-reviews, and sessions in MongoDB. Ensure the Atlas database user has the
-required permissions and that the deployment server's IP address is allowed
-in Atlas Network Access.
-
-## Deployment
-
-Configure the environment variables in the hosting provider rather than
-committing `.env`. In production, set both `ATLASDB_URL` and
-`SESSION_SECRET`; the application refuses to start without them.
-
-Run the production application with:
-
-```bash
-npm start
-```
-
-Use `/health` as the service health-check path.
-
-## Project structure
-
-```text
-controller/   Request handlers
-models/       Mongoose models
-routes/       Express routes
-views/        EJS templates
-public/       CSS, JavaScript, and static assets
-Middleware/   Authentication, authorization, and validation
-utils/        Shared application utilities
-```
-
-## Security notes
-
-- Never commit `.env` or production credentials.
-- Use a strong, unique `SESSION_SECRET` in production.
-- Restrict MongoDB Atlas Network Access to trusted addresses where possible.
-- Review dependency audit findings before production release.
+- `controller/` - Application request handlers
+- `models/` - Mongoose database models
+- `routes/` - Express route definitions
+- `views/` - EJS page templates
+- `public/` - Stylesheets, JavaScript, and static assets
+- `Middleware/` - Authentication, authorization, and validation
+- `utils/` - Shared application utilities
