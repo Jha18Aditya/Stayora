@@ -711,8 +711,8 @@ img {
 .map-note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
 .map-section { margin-top: 40px; }
 .map-section .section-heading { margin-bottom: 16px; }
-#map { border-radius: 18px; height: 430px; overflow: visible; }
-.mapboxgl-map { border-radius: 18px; overflow: visible; }
+#map { border-radius: 18px; height: 430px; overflow: hidden; }
+.mapboxgl-map { border-radius: 18px; overflow: hidden; }
 .mapboxgl-popup { z-index: 5; }
 .mapboxgl-popup-content { border-radius: 12px; box-shadow: 0 5px 18px rgba(0,0,0,.18); font: inherit; padding: 15px 34px 15px 15px; }
 .mapboxgl-popup-close-button { color: #222; font-size: 22px; font-weight: 700; line-height: 1; padding: 6px 10px; right: 0; top: 0; z-index: 2; }
