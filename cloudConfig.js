@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'AIR_BNB',
     resource_type: 'image',
-    allowed_formats: ['jpg', 'jpeg', 'png'],
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
   },
 });
 

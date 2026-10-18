@@ -6,10 +6,10 @@ const upload = multer({
   storage,
   fileFilter: (req, file, callback) => {
     const extension = path.extname(file.originalname || "").toLowerCase();
-    const validMime = ["image/jpeg", "image/jpg", "image/png"].includes(file.mimetype);
-    const validExtension = [".jpg", ".jpeg", ".png"].includes(extension);
+    const validMime = ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.mimetype);
+    const validExtension = [".jpg", ".jpeg", ".png", ".webp"].includes(extension);
     if (validMime || validExtension) return callback(null, true);
-    return callback(new Error("Only JPG, JPEG, and PNG images are supported."));
+    return callback(new Error("Only JPG, JPEG, PNG, and WebP images are supported."));
   },
 });
 const router=express.Router({mergeParams:true});
@@ -27,10 +27,10 @@ const uploadListingImages = (req, res, next) => {
       req.flash("error", "Please upload no more than 5 images.");
     } else if (err.code === "LIMIT_FILE_SIZE") {
       req.flash("error", "Each image is too large. Please choose a smaller file.");
-    } else if (err.message === "Only JPG, JPEG, and PNG images are supported.") {
+    } else if (err.message === "Only JPG, JPEG, PNG, and WebP images are supported.") {
       req.flash("error", err.message);
     } else {
-      req.flash("error", "Image upload failed. Please use JPG or PNG images and try again.");
+      req.flash("error", "Image upload failed. Please use JPG, JPEG, PNG, or WebP images and try again.");
     }
     return res.redirect(req.method === "PUT" ? `/listing/${req.params.id}/edit` : "/listing/new");
   });
