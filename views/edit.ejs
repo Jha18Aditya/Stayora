@@ -1,0 +1,93 @@
+<% layout("layouts/boilerplate.ejs") %>
+<main class="edit-page">
+  <p class="eyebrow">Update your property</p>
+  <h1>Edit listing</h1>
+  <form
+    method="POST"
+    action="/listing/<%= item._id %>?_method=PUT"
+    class="needs-validation"
+    data-listing-form
+    data-loading-message="Saving your updates. Your listing will be refreshed shortly."
+    novalidate
+    enctype="multipart/form-data"
+  >
+    <div>
+      <label for="category">Category</label>
+      <select id="category" name="listing[category]" class="form-control" required>
+        <% categories.forEach((category) => { %>
+          <option value="<%= category %>" <%= (item.category || "Trending") === category ? "selected" : "" %>><%= category %></option>
+        <% }) %>
+      </select>
+      <div class="invalid-feedback">Please choose a category.</div>
+    </div>
+    <div>
+      <input
+        type="text"
+        name="listing[title]"
+        class="form-control"
+        value="<%= item.title %>"
+        minlength="3"
+        maxlength="100"
+        required
+      />
+      <div class="invalid-feedback">Please enter a title.</div>
+    </div>
+    <div>
+      <textarea
+        name="listing[description]"
+        class="form-control"
+        maxlength="1000"
+        required
+      ><%= item.description %></textarea>
+      <div class="invalid-feedback">Please enter a description.</div>
+    </div>
+    <div>
+      <input
+        type="file"
+        name="listing[images]"
+        class="form-control"
+        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+        multiple
+        data-max-files="5"
+      />
+      <small class="form-hint">Choose up to 5 new photos to replace the current gallery.</small>
+    </div>
+    <div>
+      <input
+        type="number"
+        name="listing[price]"
+        class="form-control"
+        value="<%= item.price %>"
+        min="1"
+        max="10000000"
+        required
+      />
+      <div class="invalid-feedback">Please enter a valid price.</div>
+    </div>
+    <div>
+      <input
+        type="text"
+        name="listing[location]"
+        class="form-control"
+        value="<%= item.location %>"
+        minlength="2"
+        maxlength="100"
+        required
+      />
+      <div class="invalid-feedback">Please enter a location.</div>
+    </div>
+    <div>
+      <input
+        type="text"
+        name="listing[country]"
+        class="form-control"
+        value="<%= item.country %>"
+        minlength="3"
+        maxlength="100"
+        required
+      />
+      <div class="invalid-feedback">Please enter a country.</div>
+    </div>
+    <button class="btn btn-primary" type="submit">Edit</button>
+  </form>
+</main>

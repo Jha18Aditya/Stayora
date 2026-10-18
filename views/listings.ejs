@@ -1,0 +1,73 @@
+<% layout("layouts/boilerplate.ejs") %>
+<main class="listing-page">
+  <div class="page-heading">
+    <div><p class="eyebrow">Find your next stay</p><h1>Explore listings</h1></div>
+  </div>
+
+  <form class="listing-search" method="GET" action="/listing" role="search">
+    <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 5 5"/></svg>
+    <input type="search" name="q" value="<%= searchQuery || '' %>" placeholder="Search by city, country, or stay name" aria-label="Search listings" />
+    <% if (selectedCategory && selectedCategory !== "All") { %><input type="hidden" name="category" value="<%= selectedCategory %>" /><% } %>
+    <button type="submit">Search</button>
+  </form>
+
+  <% const categoryIcons = {
+    "Trending": "M3 17h18M5 17a7 7 0 0 1 14 0M8 13l1.5-3 2.5 2 2.5-5 1.5 3",
+    "Rooms": "M3 18V9m0 5h18v4M6 14v-3h5a3 3 0 0 1 3 3M21 18v-4",
+    "Iconic Cities": "M4 21V9l5-3v15M9 21V4l6 3v14M15 21v-9l5-3v12M7 12h.01M12 10h.01M12 14h.01M18 14h.01",
+    "Mountains": "m3 20 6-11 3 5 3-4 6 10M3 20h18M16 7h.01",
+    "Castles": "M4 21V8l3-2 3 2 2-2 3 2 3-2 2 2v13M4 21h16M8 12h.01M12 12h.01M16 12h.01",
+    "Amazing Pools": "M3 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2M3 20c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2M6 11a6 6 0 0 1 12 0",
+    "Camping": "M3 20 12 4l9 16M7 20h10M9 14h6",
+    "Farms": "M3 20V9l9-5 9 5v11M7 20v-6h10v6M12 4v4M9 8h6",
+    "Arctic": "M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M8 5l4 3 4-3M8 19l4-3 4 3"
+  }; %>
+  <nav class="category-filter" aria-label="Browse by category">
+    <a class="category-filter-item <%= selectedCategory === 'All' ? 'active' : '' %>" href="/listing<%= searchQuery ? '?q=' + encodeURIComponent(searchQuery) : '' %>">
+      <span><svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.5 5.2 3.5 8.5s-1.2 6.1-3.5 8.5c-2.3-2.4-3.5-5.2-3.5-8.5S9.7 5.9 12 3.5Z"/></svg></span><strong>All stays</strong>
+    </a>
+    <% categories.forEach((category) => { %>
+      <a class="category-filter-item <%= selectedCategory === category ? 'active' : '' %>" href="/listing?category=<%= encodeURIComponent(category) %><%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>">
+        <span><svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="<%= categoryIcons[category] %>"/></svg></span><strong><%= category %></strong>
+      </a>
+    <% }) %>
+  </nav>
+
+  <% if (!List.length) { %>
+    <div class="empty-state"><svg class="empty-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 5 5"/></svg><h2>No stays found</h2><p>Try a different search or browse all categories.</p><a class="button" href="/listing">Show all listings</a></div>
+  <% } %>
+
+  <div class="listing-grid">
+    <% for(let item of List){ %>
+      <a class="listing-tile" href="/listing/<%= item._id %>">
+        <% const cardImages = item.images && item.images.length ? item.images : [item.image]; %>
+        <% const isSaved = savedListingIds.has(String(item._id)); %>
+        <div class="listing-card-media" data-carousel>
+          <div class="listing-slides">
+            <% cardImages.forEach((image, index) => { %><img class="listing-slide <%= index === 0 ? 'is-active' : '' %>" src="<%= image.url %>" alt="<%= item.title %> photo <%= index + 1 %>"><% }) %>
+          </div>
+          <% if (cardImages.length > 1) { %>
+            <button class="carousel-button carousel-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button class="carousel-button carousel-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+            <div class="carousel-dots" aria-hidden="true"><% cardImages.forEach((image, index) => { %><i class="<%= index === 0 ? 'active' : '' %>"></i><% }) %></div>
+          <% } %>
+          <button
+            class="listing-heart <%= isSaved ? 'is-saved' : '' %>"
+            type="button"
+            data-save-listing
+            data-listing-id="<%= item._id %>"
+            data-requires-login="<%= currentUser ? 'false' : 'true' %>"
+            aria-label="<%= isSaved ? 'Remove from saved places' : 'Save this place' %>"
+            aria-pressed="<%= isSaved %>">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.6c0 5.5-8.8 11-8.8 11s-8.8-5.5-8.8-11A4.6 4.6 0 0 1 12 6.2a4.6 4.6 0 0 1 8.8 2.4Z"/></svg>
+          </button>
+        </div>
+        <div class="listing-tile-info">
+          <div class="listing-title-row"><h2><%= item.title %></h2><span class="listing-rating"><%= item.averageRating || "New" %><% if (item.averageRating) { %><svg class="small-star" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg><% } %></span></div>
+          <p><%= item.location %>, <%= item.country %></p>
+          <strong>&#8377;<%= item.price.toLocaleString("en-IN") %> <span>/ night</span></strong>
+        </div>
+      </a>
+    <% } %>
+  </div>
+</main>

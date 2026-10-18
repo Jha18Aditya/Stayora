@@ -1,0 +1,90 @@
+<% layout("layouts/boilerplate.ejs") %>
+<main class="new-page">
+  <p class="eyebrow">Create your property</p>
+  <h1>New listing</h1>
+  <form method="POST" action="/listing" class="needs-validation" data-listing-form data-loading-message="Your place is taking shape. We’ll have it ready in just a moment." novalidate enctype="multipart/form-data">
+    <div>
+      <label for="category">Category</label>
+      <select id="category" name="listing[category]" class="form-control" required>
+        <option value="" selected disabled>Choose a category</option>
+        <% categories.forEach((category) => { %>
+          <option value="<%= category %>"><%= category %></option>
+        <% }) %>
+      </select>
+      <div class="invalid-feedback">Please choose a category.</div>
+    </div>
+    <div>
+      <input
+        type="text"
+        name="listing[title]"
+        class="form-control"
+        placeholder="Enter the title"
+        minlength="3"
+        maxlength="100"
+        required
+      />
+      <div class="invalid-feedback">Please enter a title.</div>
+    </div>
+    <div>
+      <textarea
+        name="listing[description]"
+        class="form-control"
+        placeholder="Enter description"
+        maxlength="1000"
+        required
+      ></textarea>
+      <div class="invalid-feedback">Please enter a description.</div>
+    </div>
+    <div>
+      <input
+        type="file"
+        name="listing[images]"
+        class="form-control"
+        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+        multiple
+        data-max-files="5"
+        required
+      />
+      <small class="form-hint">Upload up to 5 photos. The first photo will be the cover.</small>
+      <div class="invalid-feedback">Please upload at least one image.</div>
+    </div>
+    <div>
+      <input
+        type="number"
+        name="listing[price]"
+        class="form-control"
+        placeholder="Enter price"
+        min="1"
+        max="10000000"
+        required
+      />
+      <div class="invalid-feedback">Please enter a valid price.</div>
+    </div>
+    <div>
+      <input
+        type="text"
+        name="listing[location]"
+        class="form-control"
+        placeholder="Enter property location"
+        minlength="2"
+        maxlength="100"
+        required
+      />
+      <div class="invalid-feedback">Please enter a location.</div>
+    </div>
+    <div>
+      <input
+        type="text"
+        name="listing[country]"
+        class="form-control"
+        placeholder="Enter property country"
+        minlength="3"
+        maxlength="100"
+        required
+      />
+      <div class="invalid-feedback">Please enter a country.</div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Add</button>
+  </form>
+</main>

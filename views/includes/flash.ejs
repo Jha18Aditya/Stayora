@@ -1,0 +1,8 @@
+<div class="toast-stack" aria-live="polite" aria-atomic="true">
+  <% (errorMsg || []).forEach((message) => { %>
+    <div class="flash-message flash-error" role="status"><span><%= message %></span><button type="button" class="toast-dismiss" aria-label="Dismiss notification"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+  <% }) %>
+  <% (successMsg || []).forEach((message) => { %>
+    <div class="flash-message flash-success" role="status"><span><%= message %></span><button type="button" class="toast-dismiss" aria-label="Dismiss notification"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg></button></div>
+  <% }) %>
+</div>

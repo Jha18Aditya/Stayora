@@ -1,0 +1,33 @@
+<% layout("layouts/boilerplate.ejs") %>
+<main class="auth-page">
+  <section class="auth-intro">
+    <img src="/assets/home-smile-svgrepo-com.svg?v=2" alt="Stayora" class="auth-mark">
+    <p class="eyebrow">Join Stayora</p>
+    <h1>Make room for better trips.</h1>
+    <p>Save the places you love, share your own space, and travel with more confidence.</p>
+    <div class="auth-intro-points"><span><b>01</b> Find a place that feels right</span><span><b>02</b> Keep your favorite stays close</span><span><b>03</b> Host on your own terms</span></div>
+  </section>
+
+  <section class="auth-card">
+    <div class="auth-card-heading"><p class="eyebrow"><%= authIntent === 'host' ? 'Become a host' : 'Start exploring' %></p><h2><%= authIntent === 'host' ? 'Your hosting journey starts here.' : 'Create your account' %></h2><p><%= authIntent === 'host' ? 'Sign up first, then create a listing guests will love.' : 'It only takes a minute to get started.' %></p><% if (authIntent === 'host') { %><div class="auth-host-note"><strong>Simple steps, helpful guidance.</strong><span>Set up your place today and finish the details when you’re ready.</span></div><% } %></div>
+    <form method="POST" action="/signup" class="auth-form needs-validation" novalidate>
+      <div class="auth-field">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" class="form-control" placeholder="Choose a username" autocomplete="username" minlength="3" maxlength="100" required>
+        <div class="invalid-feedback">Please enter a username.</div>
+      </div>
+      <div class="auth-field">
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" class="form-control" placeholder="you@example.com" autocomplete="email" required>
+        <div class="invalid-feedback">Please enter a valid email.</div>
+      </div>
+      <div class="auth-field">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" class="form-control" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required>
+        <div class="invalid-feedback">Please enter a password of at least 8 characters.</div>
+      </div>
+      <button class="auth-submit" type="submit">Create account</button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="/login<%= authIntent === 'host' ? '?intent=host' : '' %>">Log in</a></p>
+  </section>
+</main>

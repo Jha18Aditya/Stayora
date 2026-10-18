@@ -1,0 +1,28 @@
+<% layout("layouts/boilerplate.ejs") %>
+<main class="auth-page">
+  <section class="auth-intro">
+    <img src="/assets/home-smile-svgrepo-com.svg?v=2" alt="Stayora" class="auth-mark">
+    <p class="eyebrow">Welcome back</p>
+    <h1>Good to see you again.</h1>
+    <p>Pick up where you left off and find your next comfortable stay.</p>
+    <div class="auth-intro-line"><span></span><small>Simple stays. Better trips.</small><span></span></div>
+  </section>
+
+  <section class="auth-card">
+    <div class="auth-card-heading"><p class="eyebrow"><%= authIntent === 'host' ? 'Become a host' : 'Your account' %></p><h2><%= authIntent === 'host' ? 'Share your place with the world.' : 'Log in to Stayora' %></h2><p><%= authIntent === 'host' ? 'Create or manage your listing and welcome guests on your own terms.' : 'Access your saved stays and hosting tools.' %></p><% if (authIntent === 'host') { %><div class="auth-host-note"><strong>What happens next?</strong><span>We’ll guide you through your title, photos, price, and location.</span></div><% } %><% if (loginMessage) { %><p class="auth-notice"><%= loginMessage %></p><% } %></div>
+    <form method="POST" action="/login" class="auth-form needs-validation" novalidate>
+      <div class="auth-field">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" class="form-control" placeholder="Enter your username" autocomplete="username" minlength="3" maxlength="100" required>
+        <div class="invalid-feedback">Please enter a username.</div>
+      </div>
+      <div class="auth-field">
+        <div class="field-label-row"><label for="password">Password</label><span class="field-note">Keep it private</span></div>
+        <input id="password" type="password" name="password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required>
+        <div class="invalid-feedback">Please enter your password.</div>
+      </div>
+      <button class="auth-submit" type="submit">Log in</button>
+    </form>
+    <p class="auth-switch">Don't have an account? <a href="/signup<%= authIntent === 'host' ? '?intent=host' : '' %>"><%= authIntent === 'host' ? 'Create a hosting account' : 'Create one' %></a></p>
+  </section>
+</main>

@@ -1,0 +1,29 @@
+<nav class="navbar" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="brand" href="/listing" aria-label="Stayora home">
+      <img src="/assets/home-smile-svgrepo-com.svg?v=2" alt="" class="brand-mark">
+      <span>Stayora</span>
+    </a>
+
+    <div class="nav-auth">
+      <% if (!isUser) { %>
+        <a class="nav-login" href="/login"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c.5-3.5 2.7-5.5 7-5.5s6.5 2 7 5.5"/></svg><span>Log in</span></a>
+        <a class="nav-auth-cta" href="/signup">Create account</a>
+      <% } else { %>
+        <button class="nav-menu-button" type="button" data-nav-menu-toggle aria-expanded="false" aria-controls="nav-menu">
+          <span class="nav-avatar"><%= currentUser.username.slice(0, 1).toUpperCase() %></span>
+          <svg class="nav-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+          <span class="visually-hidden">Open account menu</span>
+        </button>
+
+        <div class="nav-menu" id="nav-menu" data-nav-menu hidden>
+          <div class="nav-menu-user">Hi, <strong><%= currentUser.username %></strong></div>
+          <a href="/dashboard">Dashboard</a>
+          <a class="nav-menu-create" href="/listing/new">Share a place with guests</a>
+          <div class="nav-menu-divider"></div>
+          <a href="/logout">Log out</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</nav>

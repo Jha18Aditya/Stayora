@@ -1,0 +1,65 @@
+<% layout("layouts/boilerplate.ejs") %>
+<main class="dashboard-page">
+  <div class="dashboard-heading">
+    <div>
+      <p class="eyebrow">Your Stayora space</p>
+      <h1>Welcome, <%= currentUser.username %>.</h1>
+      <p>Manage your listings and keep your hosting details in one place.</p>
+    </div>
+    <a class="dashboard-logout" href="/logout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10"/></svg>Log out</a>
+  </div>
+
+  <div class="dashboard-stats">
+    <div><strong><%= listings.length %></strong><span>Your listings</span></div>
+    <div><strong><%= listings.reduce((sum, listing) => sum + listing.reviewCount, 0) %></strong><span>Total reviews</span></div>
+    <div><strong><%= listings.length ? "Active" : "Ready" %></strong><span>Hosting status</span></div>
+    <div><strong><%= savedListings.length %></strong><span>Saved places</span></div>
+  </div>
+
+  <div class="dashboard-section-heading"><div><h2>Your listings</h2><p>Update, review, or open one of your stays.</p></div><a class="button" href="/listing/new">Add listing</a></div>
+
+  <% if (!listings.length) { %>
+    <div class="dashboard-empty"><h2>Your first stay starts here.</h2><p>You have not added a listing yet. Share a place guests will love.</p><a class="button" href="/listing/new">Create your first listing</a></div>
+  <% } else { %>
+    <div class="dashboard-listing-grid">
+      <% listings.forEach((listing) => { const image = listing.images && listing.images.length ? listing.images[0] : listing.image; %>
+        <article class="dashboard-listing-card">
+          <img src="<%= image.url %>" alt="<%= listing.title %>">
+          <div class="dashboard-listing-info">
+            <div class="dashboard-listing-meta"><span><%= listing.category || "Trending" %></span><span><%= listing.averageRating ? `${listing.averageRating} / 5` : "New" %></span></div>
+            <h3><%= listing.title %></h3>
+            <p><%= listing.location %>, <%= listing.country %></p>
+            <small><%= listing.reviewCount %> review<%= listing.reviewCount === 1 ? "" : "s" %></small>
+            <div class="dashboard-card-actions"><a href="/listing/<%= listing._id %>">View</a><a href="/listing/<%= listing._id %>/edit">Edit</a></div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <section class="dashboard-saved-section">
+    <div class="dashboard-section-heading">
+      <div><h2>Saved places</h2><p>Your favourite stays, ready whenever you are.</p></div>
+      <a class="button" href="/listing">Explore stays</a>
+    </div>
+
+    <% if (!savedListings.length) { %>
+      <div class="dashboard-empty"><h2>Keep the good ones close.</h2><p>Tap the heart on any stay you love and it will appear here.</p><a class="button" href="/listing">Find a place to save</a></div>
+    <% } else { %>
+      <div class="dashboard-listing-grid">
+        <% savedListings.forEach((listing) => { const image = listing.images && listing.images.length ? listing.images[0] : listing.image; %>
+          <article class="dashboard-listing-card">
+            <a href="/listing/<%= listing._id %>" aria-label="View <%= listing.title %>"><img src="<%= image.url %>" alt="<%= listing.title %>"></a>
+            <div class="dashboard-listing-info">
+              <div class="dashboard-listing-meta"><span><%= listing.category || "Trending" %></span><span><%= listing.averageRating ? `${listing.averageRating} / 5` : "New" %></span></div>
+              <h3><%= listing.title %></h3>
+              <p><%= listing.location %>, <%= listing.country %></p>
+              <small><%= listing.reviewCount %> review<%= listing.reviewCount === 1 ? "" : "s" %></small>
+              <div class="dashboard-card-actions"><a href="/listing/<%= listing._id %>">View stay</a></div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</main>

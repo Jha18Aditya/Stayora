@@ -1,0 +1,155 @@
+<% layout("layouts/boilerplate.ejs") %>
+<% const galleryImages = (item.images && item.images.length ? item.images.slice(0, 5) : [item.image]).filter((image) => image && image.url); %>
+<% const ratedReviews = item.reviews.filter((review) => review.rating); %>
+<% const averageRating = ratedReviews.length ? (ratedReviews.reduce((sum, review) => sum + review.rating, 0) / ratedReviews.length).toFixed(2) : null; %>
+<% const todayValue = new Date().toISOString().slice(0, 10); %>
+<% const isSaved = Boolean(currentUser && currentUser.savedListings && currentUser.savedListings.some((savedId) => String(savedId) === String(item._id))); %>
+<main class="detail-page">
+  <a class="back-link" href="/listing">Back to listings</a>
+
+  <div class="detail-heading">
+    <div>
+      <p class="eyebrow"><%= item.category || "Trending" %></p>
+      <h1><%= item.title %></h1>
+      <p class="detail-location"><%= item.location %>, <%= item.country %> &middot; Hosted by <%= item.owner ? item.owner.username : "Unknown owner" %></p>
+    </div>
+    <div class="detail-heading-actions">
+      <button class="detail-share-button" type="button" data-share-listing>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg>
+        <span>Share</span>
+      </button>
+      <button class="detail-save-button <%= isSaved ? 'is-saved' : '' %>" type="button" data-save-listing data-listing-id="<%= item._id %>" data-requires-login="<%= currentUser ? 'false' : 'true' %>" aria-label="<%= isSaved ? 'Remove from saved places' : 'Save this place' %>" aria-pressed="<%= isSaved %>">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.6c0 5.5-8.8 11-8.8 11s-8.8-5.5-8.8-11A4.6 4.6 0 0 1 12 6.2a4.6 4.6 0 0 1 8.8 2.4Z"/></svg>
+        <span><%= isSaved ? 'Saved' : 'Save' %></span>
+      </button>
+    </div>
+  </div>
+
+  <section class="detail-gallery <%= galleryImages.length === 1 ? 'single-image' : `count-${galleryImages.length}` %>" data-photo-gallery aria-label="Listing photos">
+    <% if (galleryImages.length === 1) { %>
+      <div class="detail-single-image"><img src="<%= galleryImages[0].url %>" alt="<%= item.title %>" loading="eager"></div>
+    <% } else { %>
+      <div class="detail-gallery-grid">
+        <% galleryImages.forEach((image, index) => { %>
+          <button class="gallery-photo <%= index === 0 ? 'gallery-main' : 'gallery-tile' %>" type="button" data-gallery-image data-photo-index="<%= index %>" aria-label="Open photo <%= index + 1 %>"><img src="<%= image.url %>" alt="<%= item.title %> photo <%= index + 1 %>" loading="<%= index === 0 ? 'eager' : 'lazy' %>"></button>
+        <% }) %>
+        <button class="show-all-photos" type="button" data-open-gallery><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="5" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="19" cy="5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="19" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="19" cy="19" r="1"/></svg>Show all photos</button>
+      </div>
+    <% } %>
+  </section>
+
+  <% if (galleryImages.length > 1) { %>
+    <div class="photo-modal" data-photo-modal hidden>
+      <div class="photo-modal-backdrop" data-close-gallery></div>
+      <div class="photo-modal-dialog" role="dialog" aria-modal="true" aria-label="Listing photos">
+        <button class="photo-modal-close" type="button" data-close-gallery aria-label="Close photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <img class="photo-modal-image" data-modal-image src="<%= galleryImages[0].url %>" alt="<%= item.title %> photo 1">
+        <button class="photo-modal-button photo-modal-prev" type="button" data-modal-prev aria-label="Previous photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="photo-modal-button photo-modal-next" type="button" data-modal-next aria-label="Next photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        <p class="photo-modal-count" data-modal-count>1 / <%= galleryImages.length %></p>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="detail-layout">
+    <div class="detail-main">
+      <section class="detail-summary">
+        <div>
+          <h2>About this place</h2>
+          <p><%= item.description %></p>
+          <% if (averageRating) { %>
+            <a class="detail-about-rating" href="#guest-reviews" aria-label="View guest reviews">
+              <svg class="small-star" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>
+              <strong><%= averageRating %></strong><span><%= ratedReviews.length %> review<%= ratedReviews.length === 1 ? '' : 's' %></span>
+            </a>
+          <% } %>
+        </div>
+        <div class="detail-facts">
+          <span><svg class="fact-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Zm6 11v-6h6v6"/></svg>Entire place</span>
+          <span><svg class="fact-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.4-3.1 2.2-5 6-5s5.6 1.9 6 5M14 15c3.5-.5 5.9 1.2 6.5 4.5"/></svg>Great for guests</span>
+          <span><svg class="fact-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.2"/></svg><%= item.location %></span>
+        </div>
+      </section>
+
+      <% if(currentUser && item.owner && currentUser._id.equals(item.owner._id)){ %>
+        <div class="owner-actions" aria-label="Listing management">
+          <a class="owner-edit-button" href="/listing/<%= item._id %>/edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4"/></svg>Edit listing</a>
+          <form class="owner-delete-form" method="post" action="/listing/<%= item._id %>?_method=delete"><button class="owner-delete-button" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7l1-3h4l1 3"/></svg>Delete listing</button></form>
+        </div>
+      <% } %>
+
+      <% if(currentUser){ %><section class="reviews">
+          <div class="section-heading"><h2>Leave a review</h2><p>Share your experience with this listing.</p></div>
+          <form method="post" action="/listing/<%= item._id %>/reviews" class="review-form needs-validation" novalidate>
+            <fieldset class="rating-field starability-slot">
+              <legend>Rating <span>(1-5)</span></legend>
+              <input type="radio" id="no-rate" class="input-no-rate" name="data[rating]" value="0" checked aria-label="No rating." />
+              <% for (let rating = 1; rating <= 5; rating++) { %>
+                <input type="radio" name="data[rating]" value="<%= rating %>" id="first-rate<%= rating %>" />
+                <label for="first-rate<%= rating %>" title="<%= rating %> stars"><%= rating %> star<%= rating > 1 ? 's' : '' %></label>
+              <% } %>
+              <span class="starability-focus-ring"></span>
+              <div class="invalid-feedback">Enter a valid rating between 1 and 5.</div>
+            </fieldset>
+            <label for="review">Enter review</label>
+            <div><textarea name="data[comments]" id="review" minlength="3" class="form-control" required></textarea><div class="invalid-feedback">Enter a valid comment to submit.</div></div>
+            <button type="submit">Submit review</button>
+          </form>
+      </section><% } %>
+
+      <% if(item.reviews.length){ %><section class="reviews-section" id="guest-reviews">
+        <div class="section-heading"><h2>Guest reviews</h2><p><%= item.reviews.length %> review<%= item.reviews.length === 1 ? "" : "s" %></p></div>
+        <div class="review-list">
+          <% for (const review of item.reviews) { %>
+            <article class="review-card">
+              <div class="review-card-header">
+                <div class="review-avatar"><img src="/assets/2635417.png" alt="<%= review.author ? review.author.username : 'Guest' %>" loading="lazy"></div>
+                <div>
+                  <strong>@<%= review.author ? review.author.username : "Unknown user" %></strong>
+                  <% if (review.createdAt) { %>
+                    <time class="review-date" datetime="<%= new Date(review.createdAt).toISOString() %>"><%= new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %></time>
+                  <% } %>
+                  <div class="review-rating" aria-label="<%= review.rating %> out of 5 stars">
+                    <span class="review-stars" aria-hidden="true">
+                      <% for (let star = 1; star <= 5; star++) { %>
+                        <svg class="review-star <%= star <= review.rating ? 'is-filled' : '' %>" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>
+                      <% } %>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <p class="review-comment"><%= review.comments %></p>
+              <% if(currentUser && review.author && currentUser._id.equals(review.author._id)){ %>
+                <form class="review-delete-form" method="POST" action="/listing/<%= item._id %>/reviews/<%= review._id %>?_method=DELETE"><button type="submit" class="delete-button">Delete review</button></form>
+              <% } %>
+            </article>
+          <% } %>
+        </div>
+      </section><% } %>
+
+      <section class="map-section">
+        <div class="section-heading"><h2>Where you'll be</h2><p><%= item.location %>, <%= item.country %></p></div>
+        <div id="map" data-mapbox-access-token="<%= mapboxAccessToken %>" data-map-coordinates="<%= item.geometry ? JSON.stringify(item.geometry.coordinates) : '' %>" data-map-popup="<%= item.location %>, <%= item.country %>"></div>
+        <p class="map-note">Exact location will be provided after booking.</p>
+      </section>
+    </div>
+
+    <aside class="booking-card">
+      <div class="booking-price"><strong>&#8377;<%= item.price.toLocaleString("en-IN") %></strong> <span>per night</span></div>
+      <form class="booking-form" data-reservation-form data-price="<%= item.price %>" action="/listing/<%= item._id %>/reserve" method="POST" novalidate>
+        <div class="booking-fields">
+          <label><small>CHECK-IN</small><input type="date" name="reservation[checkIn]" min="<%= todayValue %>" required></label>
+          <label><small>CHECKOUT</small><input type="date" name="reservation[checkOut]" min="<%= todayValue %>" required></label>
+          <label class="guest-field"><small>GUESTS</small><span class="guest-counter"><button type="button" data-guest-decrease aria-label="Decrease guests">−</button><input type="number" name="reservation[guests]" min="1" max="16" value="1" inputmode="numeric" required aria-label="Number of guests"><button type="button" data-guest-increase aria-label="Increase guests">+</button></span></label>
+        </div>
+        <div class="booking-summary" aria-live="polite" hidden>
+          <div><span>Length of stay</span><strong data-booking-nights>Choose your dates</strong></div>
+          <div><span>Estimated total</span><strong data-booking-total>&#8377;0</strong></div>
+        </div>
+        <p class="booking-error" data-booking-error role="alert" hidden></p>
+        <button class="reserve-button" type="submit">Reserve</button>
+        <p class="booking-note">You won't be charged yet</p>
+      </form>
+    </aside>
+  </div>
+</main>
